@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        PATH = "/usr/bin/podman:${env.PATH}" // Adjust path if necessary
+    }
+
+    stages {
+        stage('Clean and Clone Repository') {
+            steps {
+                cleanWs()
+                sh 'git clone https://github.com/Vedhangi/Podman.git'
+            }
+        }
+
+        stage('List Files') {
+            steps {
+                dir('Podman') {
+                    sh 'ls -l'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('Podman') {
+                    sh 'podman build -t podman_imagee:2.0 -f Dockerfile .'
+                }
+            }
+        }
+
+        stage('Pod Create') {
+            steps {
+                sh 'podman pod create --name mypod_podman'
+            }
+        }
+
+        stage('list pods') {
+            steps {
+                sh 'podman pod ls'
+            }
+        }
+
+        stage('Add container to existing pod') {
+            steps {
+                sh 'podman run -d --pod mypod_podman podman_image:2.0'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                sh 'podman run localhost/podman_image:2.0'
+            }
+        }
+    }
+}
