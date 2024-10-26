@@ -37,6 +37,18 @@ pipeline {
             }
         }
 
+       stage('Pod stop') {
+            steps {
+                sh 'podman pod stop mypod_new'
+            }
+        }
+
+       stage('Pod remove') {
+            steps {
+                sh 'podman pod rm mypod_new'
+            }
+        }
+
         stage('Pod Create') {
             steps {
                 sh 'podman pod create --name mypod_new'
