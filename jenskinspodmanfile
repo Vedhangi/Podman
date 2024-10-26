@@ -29,9 +29,17 @@ pipeline {
             }
         }
 
+        stage('List Images') {
+            steps {
+                dir('Podman') {
+                    sh 'podman images'
+                }
+            }
+        }
+
         stage('Pod Create') {
             steps {
-                sh 'podman pod create --name mypod_podman'
+                sh 'podman pod create --name mypod_new'
             }
         }
 
@@ -43,7 +51,7 @@ pipeline {
 
         stage('Add container to existing pod') {
             steps {
-                sh 'podman run -d --pod mypod_podman podman_imagee:2.0'
+                sh 'podman run -d --pod mypod_new podman_imagee:2.0'
             }
         }
 
