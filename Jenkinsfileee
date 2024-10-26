@@ -1,11 +1,10 @@
 pipeline {
     agent any
-    
+
     environment {
-        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}" 
-      
+        PATH = "/usr/bin/podman:${env.PATH}" // Adjust path if necessary
     }
-    
+
     stages {
         stage('Clean and Clone Repository') {
             steps {
@@ -13,47 +12,39 @@ pipeline {
                 sh 'git clone https://github.com/Vedhangi/Podman.git'
             }
         }
-        
+
         stage('List Files') {
             steps {
                 dir('Podman') {
-                    sh 'dir'
+                    sh 'ls -l'
                 }
             }
         }
-        
+
         stage('Build') {
             steps {
                 dir('Podman') {
-                    bat 'podman build -t podman_image:1.2 -f Dockerfile .'
+                    sh 'podman build -t podman_image:1.2 -f Dockerfile .'
                 }
             }
         }
 
-         stage('Pod Create ') {
+        stage('Pod Create') {
             steps {
-                script {
-                    sh 'podman pod create --name mypod'
-                }
+                sh 'podman pod create --name mypod'
             }
         }
 
-         stage('Add container to existing pod ') {
+        stage('Add container to existing pod') {
             steps {
-                script {
-                    sh 'podman run -d --pod mypod podman_image:1.2'
-                }
+                sh 'podman run -d --pod mypod podman_image:1.2'
             }
         }
-      
-        stage('Run ') {
+
+        stage('Run') {
             steps {
-                script {
-                    
-                    sh 'podman run localhost/podman_image:1.2'
-                }
+                sh 'podman run localhost/podman_image:1.2'
             }
         }
-     
     }
 }
