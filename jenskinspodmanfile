@@ -43,13 +43,13 @@ pipeline {
 
         stage('Add container to existing pod') {
             steps {
-                sh 'podman run -d --pod mypod_podman podman_image:2.0'
+                sh 'podman run -d --pod mypod_podman podman_imagee:2.0'
             }
         }
 
         stage('Run') {
             steps {
-                sh 'podman run localhost/podman_image:2.0'
+                sh 'podman run localhost/podman_imagee:2.0'
             }
         }
     }
