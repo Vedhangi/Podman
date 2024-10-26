@@ -25,7 +25,23 @@ pipeline {
         stage('Build') {
             steps {
                 dir('Podman') {
-                    bat 'docker build -t podman_image:1.2 -f Dockerfile .'
+                    bat 'podman build -t podman_image:1.2 -f Dockerfile .'
+                }
+            }
+        }
+
+         stage('Pod Create ') {
+            steps {
+                script {
+                    bat 'podman pod create --name mypod'
+                }
+            }
+        }
+
+         stage('Add container to existing pod ') {
+            steps {
+                script {
+                    bat 'podman run -d --pod mypod podman_image:1.2'
                 }
             }
         }
@@ -34,9 +50,10 @@ pipeline {
             steps {
                 script {
                     
-                    bat 'docker run localhost/podman_image:1.2'
+                    bat 'podman run localhost/podman_image:1.2'
                 }
             }
         }
+     
     }
 }
